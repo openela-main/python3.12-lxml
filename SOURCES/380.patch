@@ -1,0 +1,24 @@
+From d18f2f22218ea0e0b5327b5a2bda789afdf16e41 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
+Date: Fri, 14 Jul 2023 12:18:25 +0200
+Subject: [PATCH] Skip test_isoschematron.test_schematron_invalid_schema_empty
+ without the RNG file
+
+The expected SchematronParseError only happens when validate_schema is true.
+---
+ src/lxml/tests/test_isoschematron.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/lxml/tests/test_isoschematron.py b/src/lxml/tests/test_isoschematron.py
+index 6d2aa3fb6..900f257c3 100644
+--- a/src/lxml/tests/test_isoschematron.py
++++ b/src/lxml/tests/test_isoschematron.py
+@@ -55,6 +55,8 @@ def test_schematron_empty_pattern(self):
+         schema = isoschematron.Schematron(schema)
+         self.assertTrue(schema)
+ 
++    @unittest.skipIf(not isoschematron.schematron_schema_valid_supported,
++                     'SchematronParseError is risen only when validate_schema is true')
+     def test_schematron_invalid_schema_empty(self):
+         schema = self.parse('''\
+ <schema xmlns="http://purl.oclc.org/dsdl/schematron" />
