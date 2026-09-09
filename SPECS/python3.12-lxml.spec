@@ -3,7 +3,7 @@
 
 Name:           python%{python3_pkgversion}-lxml
 Version:        4.9.3
-Release:        2%{?dist}
+Release:        2%{?dist}.1
 Summary:        XML processing library combining libxml2/libxslt with the ElementTree API
 
 # The lxml project is licensed under BSD-3-Clause
@@ -33,6 +33,15 @@ Patch3:         Skip-failing-test-test_html_prefix_nsmap.patch
 # Cython 3 support backported from future lxml 5.0
 Patch4:         https://github.com/lxml/lxml/commit/dcbc0cc1cb0cedf8019184aaca805d2a649cd8de.patch
 Patch5:         https://github.com/lxml/lxml/commit/a03a4b3c6b906d33c5ef1a15f3d5ca5fff600c76.patch
+
+# Fix test_elementtree with Expat where CVE fixes changed behavior
+# Backported from https://github.com/lxml/lxml/commit/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d
+# without the check for the version of expat.
+Patch6:         Fix-test_elementtree-with-newer-expat.patch
+
+# https://issues.redhat.com/browse/RHEL-251488
+# https://github.com/lxml/lxml/commit/5927a6d5e851845140975d99b65461e255caaab0
+Patch7:         CVE-2026-49825.patch
 
 BuildRequires:  gcc
 BuildRequires:  libxml2-devel
@@ -80,6 +89,10 @@ cp -a build/lib.%{python3_platform}-*/* src/
 %{python3_sitearch}/lxml-*.egg-info/
 
 %changelog
+* Mon Aug 31 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 4.9.3-2.1
+- Fix CVE-2026-49825: add xlink:href to known HTML link attributes
+Resolves: RHEL-251488
+
 * Tue Jan 23 2024 Miro Hrončok <mhroncok@redhat.com> - 4.9.3-2
 - Rebuilt for timestamp .pyc invalidation mode
 
